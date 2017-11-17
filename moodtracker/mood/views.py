@@ -6,7 +6,8 @@ from django.http import HttpResponse
 
 from twilio.twiml.messaging_response import MessagingResponse, Message
 
-from mood.models import IncomingSMS, MoodUser
+from mood.models import IncomingSMS, Profile
+from mood import util
 
 # Create your views here.
 
@@ -16,12 +17,14 @@ def index(request):
 def incoming_sms(request):
     origin_number = request.POST.get('From','')
     message = request.POST.get('Body','')
-    user = MoodUser.objects.filter(phone_number=origin_number)
-    if user:
-        user = user[0]
-    else:
+    try:
+        profile = Profile.objects.get(phone_number=origin_number)
+        user = profile.user
+    except Exception, e:
         user = None
+        print e
     isms = IncomingSMS(phone_number=origin_number, message=message, user=user)
     isms.save()
-    twiml = '<Response><Message>Thanks for your response!</Message></Response>'
-    return HttpResponse(twiml, content_type='text/xml')
+    # Send response message
+    util.send_sms(origin_number, 'Thanks!')
+    return HttpResponse('Success', content_type='text/plain')

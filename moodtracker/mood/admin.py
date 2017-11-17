@@ -5,5 +5,5 @@ from django.contrib import admin
 from mood.models import *
 
 # Register your models here.
-admin.site.register(MoodUser)
+admin.site.register(Profile)
 admin.site.register(IncomingSMS)
