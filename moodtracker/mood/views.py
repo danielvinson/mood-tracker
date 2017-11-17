@@ -29,7 +29,7 @@ def signup(request):
             return redirect('index')
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'registration/signup.html', {'form': form})
 
 def incoming_sms(request):
     origin_number = request.POST.get('From','')

@@ -5,6 +5,14 @@
     </head>
 
     <body>
-    {% block content %}{% endblock content %}
+        <div id="head">
+	    {% if request.user.is_authenticated %}Welcome {{ request.user.username }}
+            {% else %}<a href="{% url 'login' %}">Login</a>{% endif %}
+            {% block extra_header %}
+	    {% endblock extra_header %}
+	</div>
+
+    {% block content %}
+    {% endblock content %}
     </body>
 </html>
