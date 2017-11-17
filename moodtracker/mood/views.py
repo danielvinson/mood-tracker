@@ -10,10 +10,26 @@ from mood.forms import SignUpForm
 from mood.models import IncomingSMS, Profile
 from mood import util
 
-# Create your views here.
+#####
+#
+#       Front-End Views
+#
+######
 
 def index(request):
-    return HttpResponse("Hello, world")
+    return render(request, 'index.html')
+
+def profile(request):
+    return render(request, 'user/profile.html')
+
+def mood_history(request):
+    return render(request, 'user/mood_history.html')
+
+#####
+#
+#     Registration/Auth Views
+#
+######
 
 def signup(request):
     if request.method == 'POST':
@@ -30,6 +46,13 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+
+#####
+#
+#	APIs
+#
+######
 
 def incoming_sms(request):
     origin_number = request.POST.get('From','')
