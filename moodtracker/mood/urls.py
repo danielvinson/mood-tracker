@@ -5,8 +5,8 @@ from . import views
 urlpatterns = [
     # Front-end views
     url(r'^$', views.index, name='index'),
-    url(r'profile/^$', views.profile, name='profile'),
-    url(r'mood_history/^$', views.mood_history, name='mood_history'),
+    url(r'^profile/$', views.profile, name='profile'),
+    url(r'^mood_history/$', views.mood_history, name='mood_history'),
 
     # Auth views
     url(r'^signup/$', views.signup, name='signup'),
@@ -21,4 +21,5 @@ urlpatterns = [
 
     # APIs
     url(r'^incoming_sms/$', views.incoming_sms, name='incoming_sms'),
+    url(r'^user_data/$', views.user_data, name='user_data'),
 ]

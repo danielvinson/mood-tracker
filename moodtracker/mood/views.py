@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
+
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.core.serializers import serialize
+from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
+
 
 from mood.forms import SignUpForm
-from mood.models import IncomingSMS, Profile
+from mood.models import IncomingSMS, Profile, MoodPoint
 from mood import util
 
 #####
@@ -55,6 +61,9 @@ def signup(request):
 ######
 
 def incoming_sms(request):
+    # API endpoint for Twilio webhooks.
+    # When Twilio POSTs us the data of an incoming message,
+    # we add that data to our database, then repond via Twilio.
     origin_number = request.POST.get('From','')
     message = request.POST.get('Body','')
     try:
@@ -67,5 +76,29 @@ def incoming_sms(request):
     isms = IncomingSMS(phone_number=origin_number, message=message, user=user)
     isms.save()
     # Send response message
-    util.send_sms(origin_number, 'Thanks!')
     return HttpResponse('Success', content_type='text/plain')
+
+def user_data(request):
+    # Returns data from the database for the specified user.
+    if request.method == 'GET':
+        user_id = request.GET.get('user_id','')
+        text_history_start = request.GET.get('text_start','')
+        text_history_end = request.GET.get('text_end','')
+        mood_history_start = request.GET.get('mood_start','')
+        mood_history_end = request.GET.get('mood_end','')
+        data = {}
+        if user_id:
+            user = User.objects.get(id=user_id)
+            data['user'] = model_to_dict(user)
+            data['profile'] = model_to_dict(user.profile)
+            ####
+            isms = IncomingSMS.objects.filter(user=user)
+            data['texts'] = []
+            for msg in isms:
+                data['texts'].append(model_to_dict(msg))
+            ####
+            mps = MoodPoint.objects.filter(user=user)
+            data['mood'] = []
+            for mp in mps:
+                data['mood'].append(model_to_dict(mp))
+        return HttpResponse(json.dumps(data, indent=4, default=str), content_type='text/json')

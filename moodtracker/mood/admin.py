@@ -7,3 +7,4 @@ from mood.models import *
 # Register your models here.
 admin.site.register(Profile)
 admin.site.register(IncomingSMS)
+admin.site.register(MoodPoint)

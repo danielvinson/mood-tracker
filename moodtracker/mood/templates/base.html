@@ -1,18 +1,55 @@
 <!DOCTYPE html>
 <html>
+
     <head>
         <title>Mood Tracker</title>
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,400,700" >
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Spectral+SC:300,400,700" >
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:400,600" > 
+
+        {% load static %}
+        <link rel="stylesheet"              href="{% static 'css/base.css' %}">
+        <link rel="icon" type="image/png"   href="images/favicon.ico">
+
+        {% block head %}
+        {% endblock head %}
     </head>
 
     <body>
-        <div id="head">
-	    {% if request.user.is_authenticated %}Welcome {{ request.user.username }}
-            {% else %}<a href="{% url 'login' %}">Login</a>{% endif %}
-            {% block extra_header %}
-	    {% endblock extra_header %}
-	</div>
+        <div id="content">
 
-    {% block content %}
-    {% endblock content %}
+            <div id="content_header">
+                <div id="content_header_title">
+                    <span class="page_title">
+                        <a href="{% url 'index' %}">Mood Tracker</a>
+                    </span>
+                </div>
+                <div id="content_header_profile_block">
+                    
+                    {% if request.user.is_authenticated %}
+                    
+                    <span>Hi, {{ request.user.username }}!</span>
+                    <div id="content_header_profile_links">
+                        <a href="{% url 'profile' %}">Profile</a>
+                        <a href="{% url 'profile' %}">Settings</a>
+                        <a href="{% url 'logout' %}">Log Out</a>
+                    </div>
+
+                    {% else %}
+                    <span>You're not logged in!</span>
+                    <div id="content_header_profile_links">
+                        <a href="{% url 'login' %}">Login</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="content_body">
+            {% block content %}
+            {% endblock content %}
+            </div>
+
+        </div>
     </body>
 </html>
