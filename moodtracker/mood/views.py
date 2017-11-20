@@ -11,7 +11,6 @@ from django.core.serializers import serialize
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 
-
 from mood.forms import SignUpForm
 from mood.models import IncomingSMS, Profile, MoodPoint
 from mood import util
@@ -25,8 +24,10 @@ from mood import util
 def index(request):
     return render(request, 'index.html')
 
-def profile(request):
-    return render(request, 'user/profile.html')
+def profile(request, username):
+    u = User.objects.get(username=username)
+    p = u.profile
+    return render(request, 'user/profile.html', {'user': model_to_dict(u), 'profile': model_to_dict(p)})
 
 def mood_history(request):
     return render(request, 'user/mood_history.html')
@@ -52,7 +53,6 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
-
 
 #####
 #

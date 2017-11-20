@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     # Front-end views
     url(r'^$', views.index, name='index'),
-    url(r'^profile/$', views.profile, name='profile'),
+    url(r'^profile/(?P<username>[0-9A-Z-a-z]+)/$', views.profile, name='profile'),
     url(r'^mood_history/$', views.mood_history, name='mood_history'),
 
     # Auth views

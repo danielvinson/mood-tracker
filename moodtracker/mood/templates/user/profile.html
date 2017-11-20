@@ -1,7 +1,16 @@
 {% extends "base.html" %}
 
+{% block head %}
+<script type="text/javascript">
+    console.log("{{ user|safe }}");
+    console.log("{{ profile|safe }}");
+</script>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock head %}
+
 {% block content %}
+<div id="profile">
 
-Hello!
-
+</div>
 {% endblock content %}

@@ -31,8 +31,8 @@
                     
                     <span>Hi, {{ request.user.username }}!</span>
                     <div id="content_header_profile_links">
-                        <a href="{% url 'profile' %}">Profile</a>
-                        <a href="{% url 'profile' %}">Settings</a>
+                        <a href="{% url 'profile' username=request.user.username %}">Profile</a>
+                        <a href="{% url 'profile' username=request.user.username %}">Settings</a>
                         <a href="{% url 'logout' %}">Log Out</a>
                     </div>
 
