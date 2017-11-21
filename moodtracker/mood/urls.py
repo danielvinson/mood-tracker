@@ -6,6 +6,7 @@ urlpatterns = [
     # Front-end views
     url(r'^$', views.index, name='index'),
     url(r'^profile/(?P<username>[0-9A-Z-a-z]+)/$', views.profile, name='profile'),
+    url(r'^settings/$', views.settings, name='settings'),
     url(r'^mood_history/$', views.mood_history, name='mood_history'),
 
     # Auth views
@@ -21,5 +22,7 @@ urlpatterns = [
 
     # APIs
     url(r'^incoming_sms/$', views.incoming_sms, name='incoming_sms'),
-    url(r'^user_data/$', views.user_data, name='user_data'),
+    url(r'^get_user_data/$', views.get_user_data, name='get_user_data'),
+    url(r'^get_user_profile/$', views.get_user_profile, name='get_user_profile'),
+    url(r'^update_user_profile/$', views.update_user_profile, name='update_user_profile'),
 ]

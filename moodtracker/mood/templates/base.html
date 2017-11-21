@@ -9,8 +9,9 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:400,600" > 
 
         {% load static %}
+        <script type="text/javascript"       src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
         <link rel="stylesheet"              href="{% static 'css/base.css' %}">
-        <link rel="icon" type="image/png"   href="images/favicon.ico">
+        <link rel="icon" type="image/png"   href="{% static 'images/favicon.ico' %}">
 
         {% block head %}
         {% endblock head %}
@@ -20,11 +21,13 @@
         <div id="content">
 
             <div id="content_header">
+
                 <div id="content_header_title">
                     <span class="page_title">
                         <a href="{% url 'index' %}">Mood Tracker</a>
                     </span>
                 </div>
+
                 <div id="content_header_profile_block">
                     
                     {% if request.user.is_authenticated %}
@@ -37,12 +40,17 @@
                     </div>
 
                     {% else %}
-                    <span>You're not logged in!</span>
+
+                    <span>You're not logged in.</span>
                     <div id="content_header_profile_links">
                         <a href="{% url 'login' %}">Login</a>
+                        or
+                        <a href="{% url 'signup' %}">Sign Up!</a>
                     </div>
                     {% endif %}
+
                 </div>
+
             </div>
 
             <div id="content_body">

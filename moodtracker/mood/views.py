@@ -3,17 +3,20 @@ from __future__ import unicode_literals
 
 import json
 
-from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
-from django.core.serializers import serialize
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
+from django.core.serializers import serialize
 from django.forms.models import model_to_dict
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 
+from mood import util
 from mood.forms import SignUpForm
 from mood.models import IncomingSMS, Profile, MoodPoint
-from mood import util
+
 
 #####
 #
@@ -26,8 +29,10 @@ def index(request):
 
 def profile(request, username):
     u = User.objects.get(username=username)
-    p = u.profile
-    return render(request, 'user/profile.html', {'user': model_to_dict(u), 'profile': model_to_dict(p)})
+    return render(request, 'user/profile.html', {'user_id': u.id})
+
+def settings(request):
+    return render(request, 'user/settings.html')
 
 def mood_history(request):
     return render(request, 'user/mood_history.html')
@@ -78,10 +83,14 @@ def incoming_sms(request):
     # Send response message
     return HttpResponse('Success', content_type='text/plain')
 
-def user_data(request):
+@login_required(login_url='/moodtracker/login/')
+def get_user_data(request):
     # Returns data from the database for the specified user.
+    # Permission = only self
     if request.method == 'GET':
         user_id = request.GET.get('user_id','')
+        if not request.user.id == int(user_id):
+            raise PermissionDenied
         text_history_start = request.GET.get('text_start','')
         text_history_end = request.GET.get('text_end','')
         mood_history_start = request.GET.get('mood_start','')
@@ -89,8 +98,6 @@ def user_data(request):
         data = {}
         if user_id:
             user = User.objects.get(id=user_id)
-            data['user'] = model_to_dict(user)
-            data['profile'] = model_to_dict(user.profile)
             ####
             isms = IncomingSMS.objects.filter(user=user)
             data['texts'] = []
@@ -102,3 +109,53 @@ def user_data(request):
             for mp in mps:
                 data['mood'].append(model_to_dict(mp))
         return HttpResponse(json.dumps(data, indent=4, default=str), content_type='text/json')
+
+@login_required(login_url='/moodtracker/login/')
+def get_user_profile(request):
+    # Returns public profile data
+    # Permission = any logged in user
+    if request.method == 'GET':
+        user_id = request.GET.get('user_id','')
+        data = {}
+        if user_id:
+            user = User.objects.get(id=user_id)
+            profile = user.profile
+            # Manually making a dict with the results because there is a lot of internal
+            # information stored in the user object which we don't want available.
+            data = {
+                'username': user.username,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'phone_number': profile.phone_number,
+                'is_verified': profile.is_verified,
+                'is_staff': user.is_staff, # Add a link to admin? there's a use here                
+            }
+            #data['user'] = model_to_dict(user)
+            #data['profile'] = model_to_dict(user.profile)
+        return HttpResponse(json.dumps(data, indent=4, default=str), content_type='text/json')
+
+@login_required(login_url='/moodtracker/login/')
+def update_user_profile(request):
+    # Allows a user to update their profile
+    # Params:
+    #    user_id == the user to be changed
+    #    key=value to change user
+    if request.method == 'GET':
+        user_id = request.GET.get('user_id','')
+        if not request.user.id == int(user_id):
+            raise PermissionDenied
+        user = User.objects.get(id=user_id)
+        if request.GET.get('username',''):
+            user.username = request.GET.get('username','')
+        if request.GET.get('email',''):
+            user.email = request.GET.get('email','')
+        if request.GET.get('first_name',''):
+            user.first_name = request.GET.get('first_name','')
+        if request.GET.get('last_name',''):
+            user.last_name = request.GET.get('last_name','')
+        if request.GET.get('phone_number'):
+            user.profile.phone_number = request.GET.get('phone_number','')
+        ###
+        user.save()
+        return HttpResponse("Success!")
