@@ -31,9 +31,12 @@ def profile(request, username):
     u = User.objects.get(username=username)
     return render(request, 'user/profile.html', {'user_id': u.id})
 
-def settings(request):
-    return render(request, 'user/settings.html')
+@login_required(login_url='/moodtracker/login/')
+def settings(request, username):
+    u = User.objects.get(username=username)
+    return render(request, 'user/settings.html', {'user_id': u.id})
 
+@login_required(login_url='/moodtracker/login/')
 def mood_history(request):
     return render(request, 'user/mood_history.html')
 

@@ -3,21 +3,56 @@
 {% block head %}
 <script type="text/javascript">
 
-    var user_id = "{{ user_id|safe }}";
-    console.log(user_id);
+var user_id = "{{ user_id|safe }}";
 
+$(document).ready(function(){
+    
     $.getJSON('/moodtracker/get_user_profile/', {'user_id': user_id}, function(data){
-        console.log(data);
+        for (var item in data){
+            var profile_item_name = item;
+            var profile_item_value = data[item];
+            createProfileItem(profile_item_name, profile_item_value)
+        }
+    });
+});
+
+function createProfileItem(name, value){
+
+    // Create item container
+    var $profile_item = $("<div>", {
+        id: 'profile_item_'+name,
+        'class': 'profile_item'
     });
 
+    // Create each element within the item
+    var $profile_item_name = $("<div>", {
+        id: 'profile_item_name_'+name, 
+        'class': 'profile_item_name'
+    }).text(name);
+
+    var $profile_item_value = $("<div>", {
+        id: 'profile_item_value_'+name, 
+        'class': 'profile_item_value'
+    }).text(value);
+
+    // Add everything to the DOM
+    $profile_item.append(
+        $profile_item_name,
+        $profile_item_value,
+    );
+
+    $('#profile_item_container').append($profile_item);
+}
 
 </script>
+
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock head %}
 
 {% block content %}
 <div id="profile">
-
+    <div id="profile_item_container">
+    </div>
 </div>
 {% endblock content %}

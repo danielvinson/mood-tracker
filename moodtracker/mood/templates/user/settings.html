@@ -3,21 +3,130 @@
 {% block head %}
 <script type="text/javascript">
 
-    var user_id = "{{ user_id|safe }}";
-    console.log(user_id);
+var user_id = "{{ user_id|safe }}";
 
+$(document).ready(function(){
+    
     $.getJSON('/moodtracker/get_user_profile/', {'user_id': user_id}, function(data){
-        console.log(data);
+        for (var item in data){
+            var profile_item_name = item;
+            var profile_item_value = data[item];
+            createSettingsItem(profile_item_name, profile_item_value)
+        }
     });
+});
+
+
+function createSettingsItem(name, value){
+
+    // Create item container
+    var $profile_item = $("<div>", {
+        id: 'profile_item_'+name,
+        'class': 'profile_item'
+    });
+
+    // Create each element within the item
+    var $profile_item_name = $("<div>", {
+        id: 'profile_item_name_'+name, 
+        'class': 'profile_item_name'
+    }).text(name);
+
+    var $profile_item_value = $("<div>", {
+        id: 'profile_item_value_'+name, 
+        'class': 'profile_item_value'
+    }).text(value);
+
+    var $profile_item_value_input = $("<input type='text'>", {
+        id: 'profile_item_value_input_'+name, 
+        'class': 'profile_item_value_input'
+    }).val(value);
+
+    var $profile_item_edit_button = $("<div>", {
+        id: 'profile_item_edit_button_'+name, 
+        'class': 'profile_item_edit_button'
+    }).text('edit');
+
+    var $profile_item_save_button = $("<div>", {
+        id: 'profile_item_save_button_'+name,
+        'class': 'profile_item_save_button',
+        'style': 'display: none'
+    }).text('save');
+
+    var $profile_item_cancel_button = $("<div>", {
+        id: 'profile_item_cancel_button_'+name,
+        'class': 'profile_item_cancel_button',
+        'style': 'display: none'
+    }).text('cancel');
+
+    $profile_item.append(
+        $profile_item_name,
+        $profile_item_value,
+        $profile_item_edit_button,
+        $profile_item_save_button,
+        $profile_item_cancel_button
+    );
+
+    // Add triggers for edit, save, and cancel buttons
+    $($profile_item_edit_button).click(function(){
+        $($profile_item_save_button).show();
+        $($profile_item_cancel_button).show();
+        $(this).hide();
+
+        var txt = $profile_item_value.text();
+        $($profile_item_value).replaceWith($profile_item_value_input);
+        $($profile_item_value_input).val(txt);
+    });
+
+    $($profile_item_save_button).click(function(){
+        $($profile_item_edit_button).show();
+        $(this).hide();
+        $($profile_item_cancel_button).hide();
+
+        // figure out if change was made
+        var change = true; 
+        // If a change was made, update server-side values
+        if (change){
+            var user_update_dict = {};
+            user_update_dict[name] = $profile_item_value_input.val();
+            updateUserProfile(user_update_dict);
+        }
+
+        var txt = $profile_item_value_input.val();
+        $($profile_item_value_input).replaceWith($profile_item_value);
+        $($profile_item_value).text(txt);
+    });
+
+    $($profile_item_cancel_button).click(function(){
+        $($profile_item_edit_button).show();
+        $(this).hide();
+        $($profile_item_save_button).hide();
+
+        var txt = $profile_item_value_input.val();
+        $($profile_item_value_input).replaceWith($profile_item_value);
+        $($profile_item_value).text(text);
+    });
+
+    // Add everything to the DOM
+    $('#profile_item_container').append($profile_item);
+}
+
+function updateUserProfile(data){
+    data['user_id'] = user_id;
+    console.log(data);
+    $.get('/moodtracker/update_user_profile/', data, function(msg){
+        console.log(msg);
+    });
+}
 
 
 </script>
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<link rel="stylesheet" href="{% static 'css/settings.css' %}">
 {% endblock head %}
 
 {% block content %}
 <div id="profile">
-
+    <div id="profile_item_container">
+    </div>
 </div>
 {% endblock content %}
