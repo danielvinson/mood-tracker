@@ -7,7 +7,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^profile/(?P<username>[0-9A-Z-a-z]+)/$', views.profile, name='profile'),
     url(r'^settings/(?P<username>[0-9A-Z-a-z]+)/$', views.settings, name='settings'),
-    url(r'^mood_history/$', views.mood_history, name='mood_history'),
+    url(r'^mood/$', views.mood, name='mood'),
 
     # Auth views
     url(r'^signup/$', views.signup, name='signup'),

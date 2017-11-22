@@ -37,8 +37,8 @@ def settings(request, username):
     return render(request, 'user/settings.html', {'user_id': u.id})
 
 @login_required(login_url='/moodtracker/login/')
-def mood_history(request):
-    return render(request, 'user/mood_history.html')
+def mood(request):
+    return render(request, 'user/mood.html')
 
 #####
 #
@@ -157,8 +157,9 @@ def update_user_profile(request):
             user.first_name = request.GET.get('first_name','')
         if request.GET.get('last_name',''):
             user.last_name = request.GET.get('last_name','')
-        if request.GET.get('phone_number'):
+        if request.GET.get('phone_number', ''):
             user.profile.phone_number = request.GET.get('phone_number','')
+            user.profile.save()
         ###
         user.save()
         return HttpResponse("Success!")

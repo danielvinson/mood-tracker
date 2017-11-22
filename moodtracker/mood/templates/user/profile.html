@@ -9,14 +9,19 @@ $(document).ready(function(){
     
     $.getJSON('/moodtracker/get_user_profile/', {'user_id': user_id}, function(data){
         for (var item in data){
-            var profile_item_name = item;
-            var profile_item_value = data[item];
-            createProfileItem(profile_item_name, profile_item_value)
+            var name = item;
+            var value = data[item];
+            var display_name = _.startCase(name.replace('_', ' '));
+            createProfileItem(name, value, display_name)
         }
     });
 });
 
-function createProfileItem(name, value){
+function createProfileItem(name, value, display_name){
+    // If no display name is given, use name
+    if (typeof display_name === 'undefined'){
+        display_name = name;
+    }
 
     // Create item container
     var $profile_item = $("<div>", {
@@ -28,7 +33,7 @@ function createProfileItem(name, value){
     var $profile_item_name = $("<div>", {
         id: 'profile_item_name_'+name, 
         'class': 'profile_item_name'
-    }).text(name);
+    }).text(display_name);
 
     var $profile_item_value = $("<div>", {
         id: 'profile_item_value_'+name, 
@@ -52,6 +57,7 @@ function createProfileItem(name, value){
 
 {% block content %}
 <div id="profile">
+    <h1>Profile</h1>
     <div id="profile_item_container">
     </div>
 </div>

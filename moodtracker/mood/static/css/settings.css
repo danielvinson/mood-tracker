@@ -1,11 +1,9 @@
-#profile
+#settings
 {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-
-    width: 100%;
 }
 
 #profile_item_container
@@ -14,8 +12,6 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-
-    width: 50%;
 }
 
 .profile_item
@@ -62,6 +58,7 @@
     border: 1px solid rgba(0,0,0,.6);
 
     font-family: var(--font-serif);
+    font-size: 0.8em;
 
     text-align: center;
     cursor: pointer;

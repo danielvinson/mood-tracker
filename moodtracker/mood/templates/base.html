@@ -10,6 +10,8 @@
 
         {% load static %}
         <script type="text/javascript"       src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+        <script type="text/javascript"       src="{% static 'js/lodash.min.js' %}"></script>
+
         <link rel="stylesheet"              href="{% static 'css/base.css' %}">
         <link rel="icon" type="image/png"   href="{% static 'images/favicon.ico' %}">
 
@@ -32,10 +34,12 @@
                     
                     {% if request.user.is_authenticated %}
                     
-                    <span>Hi, {{ request.user.username }}!</span>
+                    <span id="content_header_profile_greeting">Hi, {{ request.user.username }}!</span>
                     <div id="content_header_profile_links">
                         <a href="{% url 'profile' username=request.user.username %}">Profile</a>
                         <a href="{% url 'settings' username=request.user.username %}">Settings</a>
+                        <a href="{% url 'settings' username=request.user.username %}">Mood</a>
+                        <a href="{% url 'settings' username=request.user.username %}">Button?</a>
                         <a href="{% url 'logout' %}">Log Out</a>
                     </div>
 
