@@ -6,19 +6,21 @@
 var user_id = "{{ user_id|safe }}";
 
 $(document).ready(function(){
-    
     $.getJSON('/moodtracker/get_user_profile/', {'user_id': user_id}, function(data){
         for (var item in data){
             var name = item;
             var value = data[item];
             var display_name = _.startCase(name.replace('_', ' '));
-            createSettingsItem(name, value, display_name)
+            if (name == 'schedule'){
+                createScheduleEditor(value);
+            } else {
+                createBasicSettingsItem(name, value, display_name);
+            }
         }
     });
 });
 
-
-function createSettingsItem(name, value, display_name){
+function createBasicSettingsItem(name, value, display_name){
     // If no display name is given, use name
     if (typeof display_name === 'undefined'){
         display_name = name;
@@ -111,6 +113,14 @@ function createSettingsItem(name, value, display_name){
     // Add everything to the DOM
     $('#profile_item_container').append($profile_item);
 }
+
+function createScheduleEditor(schedule_data){
+    for (var key in schedule_data){
+        createBasicSettingsItem(key, schedule_data[key])
+    }
+}
+
+
 
 function updateUserProfile(data){
     data['user_id'] = user_id;

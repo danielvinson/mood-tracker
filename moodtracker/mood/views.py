@@ -15,7 +15,7 @@ from django.shortcuts import render, redirect
 
 from mood import util
 from mood.forms import SignUpForm
-from mood.models import IncomingSMS, Profile, MoodPoint
+from mood.models import IncomingSMS, Profile, MoodResponse
 
 
 #####
@@ -107,7 +107,7 @@ def get_user_data(request):
             for msg in isms:
                 data['texts'].append(model_to_dict(msg))
             ####
-            mps = MoodPoint.objects.filter(user=user)
+            mps = MoodResponse.objects.filter(user=user)
             data['mood'] = []
             for mp in mps:
                 data['mood'].append(model_to_dict(mp))
@@ -132,10 +132,14 @@ def get_user_profile(request):
                 'last_name': user.last_name,
                 'phone_number': profile.phone_number,
                 'is_verified': profile.is_verified,
-                'is_staff': user.is_staff, # Add a link to admin? there's a use here                
+                'schedule_enabled': user.profile.schedule_enabled,
+                'is_staff': user.is_staff, # Add a link to admin? there's a use here
+                'schedule_minute': user.profile.schedule.minute,
+                'schedule_hour': user.profile.schedule.hour,
+                'schedule_day_of_month': user.profile.schedule.day_of_month,
+                'schedule_day_of_week': user.profile.schedule.day_of_week,
+                'schedule_month_of_year': user.profile.schedule.month_of_year                
             }
-            #data['user'] = model_to_dict(user)
-            #data['profile'] = model_to_dict(user.profile)
         return HttpResponse(json.dumps(data, indent=4, default=str), content_type='text/json')
 
 @login_required(login_url='/moodtracker/login/')
@@ -148,6 +152,7 @@ def update_user_profile(request):
         user_id = request.GET.get('user_id','')
         if not request.user.id == int(user_id):
             raise PermissionDenied
+        ###
         user = User.objects.get(id=user_id)
         if request.GET.get('username',''):
             user.username = request.GET.get('username','')
@@ -159,7 +164,6 @@ def update_user_profile(request):
             user.last_name = request.GET.get('last_name','')
         if request.GET.get('phone_number', ''):
             user.profile.phone_number = request.GET.get('phone_number','')
-            user.profile.save()
         ###
         user.save()
         return HttpResponse("Success!")
