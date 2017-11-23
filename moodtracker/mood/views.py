@@ -122,7 +122,6 @@ def get_user_profile(request):
         data = {}
         if user_id:
             user = User.objects.get(id=user_id)
-            profile = user.profile
             # Manually making a dict with the results because there is a lot of internal
             # information stored in the user object which we don't want available.
             data = {
@@ -130,8 +129,8 @@ def get_user_profile(request):
                 'email': user.email,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
-                'phone_number': profile.phone_number,
-                'is_verified': profile.is_verified,
+                'phone_number': user.profile.phone_number,
+                'is_verified': user.profile.is_verified,
                 'schedule_enabled': user.profile.schedule_enabled,
                 'is_staff': user.is_staff, # Add a link to admin? there's a use here
                 'schedule_minute': user.profile.schedule.minute,
