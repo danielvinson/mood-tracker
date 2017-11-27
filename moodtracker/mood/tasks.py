@@ -17,6 +17,6 @@ def ask_for_mood(user_id):
         pn = user.profile.phone_number
         message = "How are you feeling?"
         msg = util.send_sms(pn, message)
-        return msg
+        return True
     except Exception, e:
         return e

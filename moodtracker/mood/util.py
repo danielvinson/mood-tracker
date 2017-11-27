@@ -18,3 +18,6 @@ def send_sms(phone_number, message):
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
     message = client.messages.create(to=phone_number, from_=TWILIO_NUMBER, body=message)
     return message
+
+def str_to_bool(s):
+    return s.lower() in ("yes", "true")

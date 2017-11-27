@@ -24,7 +24,6 @@ class Profile(models.Model):
     phone_number        = models.CharField(max_length=12, blank=True)
     is_verified         = models.BooleanField(default=False)
     schedule_enabled    = models.BooleanField(default=False)
-
     # Schedule object is unique for this User so we can not worry about deleting them.
     # Schedules will be editable
     schedule            = models.OneToOneField(CrontabSchedule, on_delete=models.CASCADE, blank=True, null=True)
@@ -49,15 +48,16 @@ def create_user_profile(sender, instance, created, **kwargs):
             crontab=s,
             name=instance.username,
             task='mood.tasks.ask_for_mood',
+            args=json.dumps([instance.id]),
         )
         Profile.objects.create(user=instance, schedule=s, task=t)
 
-# Signal to update Profile when user is saved
+# Signal to update Profile when User is saved
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    instance.profile.schedule.save()
-    instance.profile.task.save()
     instance.profile.save()
+    instance.schedule.save()
+    instance.task.save()
 
 #####
 #
@@ -72,17 +72,18 @@ class IncomingSMS(models.Model):
     timestamp       = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
-        return "%s - %s" % (self.user, self.timestamp.strftime('%Y-%m-%d %H:%M'))
-
+        return self.message
 
 # Signal to trigger when we save any SMS associated with a User into the DB
 @receiver(post_save, sender=IncomingSMS)
 def process_incoming_sms(sender, instance, **kwargs):
     isms = instance
     user = instance.user
+    # Look at numbers for numerical mood
     mood = re.sub(r'[^0-9]', '', isms.message)
     if mood == '':
         mood = 0
+    # Look at full message for tone
     tone = json.dumps(util.get_tone(isms.message))
     MoodResponse.objects.create(
         user=user,
@@ -97,7 +98,7 @@ class MoodResponse(models.Model):
     related_sms     = models.ForeignKey(IncomingSMS, on_delete=models.SET_NULL, blank=True, null=True)
     mood            = models.IntegerField(blank=False)
     timestamp       = models.DateTimeField(default=timezone.now)
-    tone            = models.CharField(max_length=5000, blank=True, null=True)
+    tone            = models.TextField(max_length=5000, blank=True, null=True)
     
     def __str__(self):
         return "%s - %s @ %s" % (self.user, self.mood, self.timestamp.strftime('%Y-%m-%d %H:%M'))
