@@ -1,20 +1,118 @@
 {% extends "base.html" %}
 
 {% block head %}
-
 {% load static %}
+<script type="text/javascript"       src="{% static 'js/react.production.min.js' %}"></script>
+<script type="text/javascript"       src="{% static 'js/react-dom.production.min.js' %}"></script>
+<script type="text/javascript"       src="{% static 'js/babel.min.js' %}"></script>
+<script type="text/javascript"       src="{% static 'js/d3.min.js' %}"></script>
+<script type="text/javascript"       src="{% static 'js/nv.d3.min.js' %}"></script>
+<script type="text/babel"            src="{% static 'js/react-nvd3.min.js' %}"></script>
 
+<link rel="stylesheet"               href="{% static 'css/nv.d3.css' %}">
 <link rel="stylesheet"               href="{% static 'css/mood.css' %}">
-
-<script type="text/javascript">
-var user_id = "{{ user_id|safe }}";
-</script>
-
-
-
 {% endblock head %}
 
 {% block content %}
 <div id="reactContainer"></div>
-<script type="text/javascript"            src="{% static 'js/mood.js' %}"></script>
+
+<script type="text/babel">
+
+;(function(global){
+
+var datum = [
+    {
+        key: "Cumulative Return",
+            values: [
+            {
+              "label" : "A" ,
+              "value" : -29.765957771107
+            } ,
+            {
+              "label" : "B" ,
+              "value" : 0
+            } ,
+            {
+              "label" : "C" ,
+              "value" : 32.807804682612
+            } ,
+            {
+              "label" : "D" ,
+              "value" : 196.45946739256
+            } ,
+            {
+              "label" : "E" ,
+              "value" : 0.19434030906893
+            } ,
+            {
+              "label" : "F" ,
+              "value" : -98.079782601442
+            } ,
+            {
+              "label" : "G" ,
+              "value" : -13.925743130903
+            } ,
+            {
+              "label" : "H" ,
+              "value" : -5.1387322875705
+            }
+        ]
+    }
+];
+    
+var user_id = "{{ user_id|safe }}";
+
+class MoodContainer extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            user_id: user_id,
+            user_data: [],
+        };
+    }
+
+    componentDidMount(){
+        this.getMoodData();
+    }
+
+    getMoodData(){
+        fetch('/moodtracker/get_user_data/?user_id='+this.state.user_id, {
+          method: "GET",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Cache': 'no-cache'
+          },
+          credentials: 'include'
+        }).then(response => {
+            if(response.ok){
+                return response.json();
+            }
+            throw new Error('Network response was not ok.');
+        }).then(data => {
+            console.log(data);
+            this.setState({ user_data: data });
+        });
+    }
+
+    render() {
+        return (
+            <div id="moodContainer">
+                <h1>Mood</h1>
+                <p>Hello User: {this.state.user_id}</p>
+                <NVD3Chart id="barChart" type="discreteBarChart" datum={datum} x="label" y="value"/>
+            </div>
+            
+        );
+    }
+}
+
+ReactDOM.render(
+    <MoodContainer />,
+    document.getElementById('reactContainer')
+);
+
+})(window);
+
+</script>
 {% endblock content %}
