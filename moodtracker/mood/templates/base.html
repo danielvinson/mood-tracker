@@ -2,7 +2,7 @@
 <html>
 
     <head>
-        <title>Mood Tracker</title>
+        <title>Mood Tracker - {% block title %}{% endblock title %}</title>
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,400,700" >
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Spectral+SC:300,400,700" >
@@ -51,6 +51,7 @@
                         or
                         <a href="{% url 'signup' %}">Sign Up!</a>
                     </div>
+                    
                     {% endif %}
 
                 </div>
