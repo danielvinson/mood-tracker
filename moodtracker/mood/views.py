@@ -17,7 +17,6 @@ from mood import util
 from mood.forms import SignUpForm
 from mood.models import IncomingSMS, Profile, MoodResponse
 
-
 #####
 #
 #       Front-End Views
@@ -37,8 +36,9 @@ def settings(request, username):
     return render(request, 'user/settings.html', {'user_id': u.id})
 
 @login_required(login_url='/moodtracker/login/')
-def mood(request):
-    return render(request, 'user/mood.html')
+def mood(request, username):
+    u = User.objects.get(username=username)
+    return render(request, 'user/mood.html', {'user_id': u.id})
 
 #####
 #

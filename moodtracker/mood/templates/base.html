@@ -38,7 +38,7 @@
                     <div id="content_header_profile_links">
                         <a href="{% url 'profile' username=request.user.username %}">Profile</a>
                         <a href="{% url 'settings' username=request.user.username %}">Settings</a>
-                        <a href="#">Mood</a>
+                        <a href="{% url 'mood' username=request.user.username %}">Mood</a>
                         <a href="#">Button?</a>
                         <a href="{% url 'logout' %}">Log Out</a>
                     </div>
