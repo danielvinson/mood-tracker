@@ -11,15 +11,32 @@
         {% load static %}
         <script type="text/javascript"       src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
         <script type="text/javascript"       src="{% static 'js/lodash.min.js' %}"></script>
-
+        <script type="text/javascript"       src="{% static 'js/svg-injector.min.js' %}"></script>
+     
         <link rel="stylesheet"              href="{% static 'css/base.css' %}">
         <link rel="icon" type="image/png"   href="{% static 'images/favicon.ico' %}">
+
+        <script type="text/javascript">
+            var SVGsToInject = document.querySelectorAll('.iconic-sprite');
+            SVGInjector(SVGsToInject);
+        </script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('#content_header_profile_block').click(function(){
+                    $('#content_header_profile_dropdown').toggle();
+                });
+            });
+        </script>
 
         {% block head %}
         {% endblock head %}
     </head>
 
     <body>
+        <!-- Load Icon Sprites -->
+        <img src="{% static 'icons/open-iconic.svg' %}" class="iconic-sprite" style="display:none;" />
+
         <div id="content">
 
             <div id="content_header">
@@ -34,28 +51,59 @@
                     
                     {% if request.user.is_authenticated %}
                     
-                    <span id="content_header_profile_greeting">Hi, {{ request.user.username }}!</span>
-                    <div id="content_header_profile_links">
-                        <a href="{% url 'profile' username=request.user.username %}">Profile</a>
-                        <a href="{% url 'settings' username=request.user.username %}">Settings</a>
-                        <a href="{% url 'mood' username=request.user.username %}">Mood</a>
-                        <a href="#">Button?</a>
-                        <a href="{% url 'logout' %}">Log Out</a>
+                    <span id="content_header_profile_greeting">{{ request.user.username }}</span>
+
+                    <div id="content_header_profile_caret">
+                        <svg viewBox="0 0 8 8" class="icon">
+                            <use xlink:href="{% static 'icons/open-iconic.svg' %}#chevron-bottom" class="icon-chevron-bottom"></use>
+                        </svg>
+                    </div>
+
+                    <div id="content_header_profile_dropdown" style="display: none">
+                        <div id="content_header_profile_dropdown_profile">
+                            <a href="{% url 'profile' username=request.user.username %}">
+                                <div id="content_header_profile_dropdown_profile_photo">
+                                    <svg viewBox="0 0 8 8" class="icon">
+                                        <use xlink:href="{% static 'icons/open-iconic.svg' %}#person" class="icon-chevron-bottom"></use>
+                                    </svg>
+                                </div>
+                                <div id="content_header_profile_dropdown_profile_name">
+                                    {{ request.user.first_name }} {{ request.user.last_name }}
+                                </div>
+                                <div id="content_header_profile_dropdown_profile_email">
+                                    {{ request.user.email }}
+                                </div>
+                            </a>
+                        </div>
+                        <div id="content_header_profile_dropdown_links">
+                            <a href="{% url 'settings' username=request.user.username %}">
+                                <div id="content_header_profile_dropdown_links_settings" class="header_dropdown_link">Settings</div>
+                            </a>
+                            <a href="{% url 'logout' %}">
+                                <div id="content_header_profile_dropdown_links_logout" class="header_dropdown_link">Log Out</div>
+                            </a>
+                            
+                        </div>
                     </div>
 
                     {% else %}
-
-                    <span>You're not logged in.</span>
-                    <div id="content_header_profile_links">
+                    <div id="content_header_login_links">
                         <a href="{% url 'login' %}">Login</a>
-                        or
                         <a href="{% url 'signup' %}">Sign Up!</a>
                     </div>
-                    
                     {% endif %}
 
                 </div>
 
+            </div>
+
+            <div id="content_menu">
+                {% if request.user.is_authenticated %}
+                <ul>
+                    <li><a href="{% url 'mood' username=request.user.username %}">Mood</a></li>
+                </ul>
+                {% else %}
+                {% endif %}
             </div>
 
             <div id="content_body">

@@ -4,9 +4,12 @@
 
 :root 
 {
+    --global-left-margin:               10%;
+    --global-right-margin:              10%;
+
     --global-primary-color:             rgba(119,68,119,1);
-    --global-primary-color-offset:      rgba(124,61,88,1);
-    --global-primary-color-highlight:   rgba(147,56,147,1);
+    --global-primary-color-offset:      rgba(102, 55, 119,1);
+    --global-primary-color-highlight:   rgba(141,76,165,1);
 
     --global-secondary-color:           rgba(175,49,49,1);
     --global-secondary-color-offset:    rgba(169,67,67,1);
@@ -56,16 +59,17 @@ body
     align-items: center;
     justify-content: space-between;
 
-    height: 80px;
+    height: 45px;
+
     padding: 0;
-    margin: 0px 10px 0px 0px;
+    margin: 0px 0px 0px 0px;
 
     color: var(--header-text-color);
 
-    background: var(--header-bg-color);
-    box-shadow: 1px 1px 3px rgba(0,0,0,.5);
+    /*background: linear-gradient(0deg, rgba(132, 29, 29, 1), rgba(180,42,42,1), rgba(180,42,42,1), rgba(180,42,42,1), rgb(237, 59, 59));*/
+    background: rgba(180,42,42,1);
 
-    border-radius: 0px 0px 30px 0px;
+    box-shadow: 1px 1px 3px rgba(0,0,0,.5);
 }
 
 #content_header_title
@@ -75,10 +79,11 @@ body
     justify-content: center;
 
     height: 100%;
-    width: 300px;
+    width: auto;
 
-    padding: 0px;
+    padding: 0px 20px 0px 20px;
     margin: 0px;
+    margin-left: var(--global-left-margin);
 }
 
 #content_header_title a
@@ -94,76 +99,256 @@ body
     font-weight: 600;
 }
 
+
 #content_header_profile_block
 {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 
     height: 100%;
-    width: 250px;
+    min-width: 135px;
 
     padding: 0px;
     margin: 0px;
-
-    border-right: 3px solid rgba(0,0,0,0.4);
-    border-left: 3px solid var(--global-primary-color-offset);
-
-    border-radius: 0px 0px 30px 0px;
+    margin-right: var(--global-right-margin);
 }
 
-#content_header_profile_links
+/* When user IS logged in */
+#content_header_profile_greeting
+{
+    padding-left: 20px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#content_header_profile_caret .icon 
+{
+    fill: #fff;
+    width: 12px;
+    height: 12px;
+}
+
+#content_header_profile_caret
+{
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+
+    padding-right: 20px;
+
+    cursor: pointer;
+}
+
+#content_header_profile_dropdown
+{
+    position: absolute;
+    top: 55px;
+    right: var(--global-right-margin);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+
+    width: 250px;
+
+    background: rgba(245,245,245,1);
+
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,.1);
+
+    box-shadow: 1px 1px 5px rgba(0,0,0,.3);
+}
+
+#content_header_profile_dropdown_profile
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+
+    width: 100%;
+
+    border-radius: 10px 10px 0px 0px;
+
+    padding: 5px;
+}
+
+#content_header_profile_dropdown_profile:hover
+{
+    background: linear-gradient(0deg,rgba(255,255,255,1),rgba(255,255,255,0));
+}
+
+#content_header_profile_dropdown_profile_photo
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+
+    padding: 5px;
+}
+
+#content_header_profile_dropdown_profile_photo svg
+{
+    width: 64px;
+    height: 64px;
+
+    fill: rgba(0,0,0,.8);
+
+    background: rgba(0,0,0,.1);
+}
+
+#content_header_profile_dropdown_profile_name
+{
+    text-align: center;
+    padding: 5px;
+}
+
+#content_header_profile_dropdown_profile_email
+{
+    text-align: center;
+    padding: 5px;
+}
+
+#content_header_profile_dropdown_profile a
+{
+    text-decoration: none;
+}
+
+#content_header_profile_dropdown_links
+{
+    width: 100%;
+}
+
+#content_header_profile_dropdown_links .header_dropdown_link
+{
+    width: 100%;
+
+    padding: 10px;
+
+    text-align: center;
+
+    border-top: 1px solid rgba(0,0,0,0.2);
+}
+
+#content_header_profile_dropdown_links .header_dropdown_link:hover
+{
+    background: linear-gradient(0deg,rgba(255,255,255,1),rgba(255,255,255,0));
+}
+
+#content_header_profile_dropdown_links a:last-child div
+{
+    border-radius: 0px 0px 10px 10px;
+}
+
+#content_header_profile_dropdown_links a
+{
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+/* When user IS NOT logged in */
+#content_header_login_links
 {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
 
-    height: 55px; /* 2 rows + 5px shared margin */
-    width: 230px; /* 3 cols + 5px shared margin */
+    height: 100%;
+    width: 200px;
+
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
 }
 
-#content_header_profile_greeting
+#content_header_login_links a
 {
-    width: 230px;
-    text-align: center;
-    font-weight: bold;
-    border-bottom: 1px solid rgba(255,255,255,.1);
-    border-top: 1px solid rgba(255,255,255,.1);
-    box-shadow: 0px 9px 10px -7px rgba(0,0,0,.8);
-}
-
-#content_header_profile_links a
-{
-    padding: 2px 5px 2px 5px;
-
-    width: 75px;
-    height: 25px;
-    line-height: 21px;
+    padding: 5px 15px 5px 15px;
 
     color: var(--header-link-color);
     text-align: center;
     text-decoration: none;
     font-family: var(--font-headings);
-    font-size: 0.8em;
+    font-size: 0.9em;
     font-weight: 400;
+    text-shadow: 1px 1px 1px rgba(0,0,0,.4);
 
+    background: var(--global-primary-color);
+
+    border: 1px solid rgba(255,255,255,0.05);
+
+    box-shadow: 1px 1px 2px rgba(0,0,0,.4);
+}
+
+#content_header_login_links a:hover
+{
+    background: var(--global-primary-color-highlight);
+}
+
+#content_header_login_links a:active
+{
     background: var(--global-primary-color-offset);
-
-    box-shadow: 1px 1px 1px rgba(0,0,0,.2);
+    text-shadow: 1px 1px 3px rgba(0,0,0,1);
 }
 
-#content_header_profile_links a:hover
+/* 
+    Menu
+*/
+
+#content_menu
 {
-    background: linear-gradient(0deg, rgba(255,255,255,.1),rgba(255,255,255,.25));
+    width: 100%;
+
+    background: linear-gradient(0deg,rgba(0,0,0,.1),rgba(0,0,0,.25));
+    box-shadow: 1px 1px 3px rgba(0,0,0,.5);
 }
 
-#content_header_profile_links a:active
+#content_menu ul
 {
-    background: linear-gradient(0deg, rgba(255,255,255,.2),rgba(255,255,255,.35));
+    list-style-type: none;
+    margin: 0;
+    margin-left: var(--global-left-margin);
+    margin-right: var(--global-right-margin);
+    padding: 0;
+}
+
+#content_menu a
+{
+    display: block;
+    text-decoration: none;
+    min-width: 120px;
+    width: 15%;
+    padding: 6px;
+
+    color: rgba(25,25,25,1);
+    text-align: center;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 1.1em;
+
+    border-left: 1px solid rgba(0,0,0,.3);
+    border-right: 1px solid rgba(0,0,0,.3);
+
+    background: linear-gradient(0deg, rgba(255,255,255,.2), rgba(255,255,255,.1));
+}
+
+#content_menu a:hover
+{
+    background: linear-gradient(0deg, rgba(255,255,255,.4), rgba(255,255,255,.1));
+}
+
+#content_menu a:active
+{
+    background: linear-gradient(0deg, rgba(255,255,255,.6), rgba(255,255,255,.2));
 }
 
 /* 
@@ -178,7 +363,7 @@ body
     justify-content: center;
 
     padding: 5px;
-    margin: 5px;
+    margin: 10px var(--global-right-margin) 10px var(--global-left-margin);
     width: auto;
 
     background: var(--content-body-color);
