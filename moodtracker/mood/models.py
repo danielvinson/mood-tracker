@@ -55,9 +55,9 @@ def create_user_profile(sender, instance, created, **kwargs):
 # Signal to update Profile when User is saved
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
+    instance.profile.schedule.save()
+    instance.profile.task.save()
     instance.profile.save()
-    instance.schedule.save()
-    instance.task.save()
 
 #####
 #
