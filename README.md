@@ -16,6 +16,12 @@ External Services: Twilio, IBM Watson Tone Analyzer
 * All recieved messages get processed through the Tone Analyzer API, and the resulting data is stored for that time.
 
 
+Current To-Do List:
+
+* Fix UI for managing profile schedules.  Plan is to use common presets with a "custom" option.
+* Profile images support.
+* Functions for converting MoodResponse's time into a more managable format.  I'm thinking that a good strategy here (outside of the obvious of "use a time-series database") is to choose a time granularity as a profile option, then round all MoodResponses to the nearest point in that.  For example an hourly granularity would round to the nearest hour in the process when converting from IncomingSMS to MoodResponse.  Handling multiple data-points at the same time might be a non-issue.
+
 
 Deploy instructions: (on an Ubuntu EC2 instance)
 
@@ -35,3 +41,20 @@ sudo pip install -r requirements.txt
 sudo python manage.py createsuperuser (follow prompts)
 
 sudo python manage.py supervisor
+
+
+Some notes on development/design process:
+
+Scheduling:
+
+There are a bunch of ways to implement scheduled events.  
+
+I chose to go with Celery+RabbitMQ over a Daemon-based solution or other systems because:
+
+* I can use configuration+scripts to very opaquely control the backend, as opposed to using code which would be hard to maintain or understand for anybody who is not intimately familiar with the implementation I chose.
+* Using one tasks.py file is very easily maintainable and is very DRY.
+* Changing schedules for one user doesn't effect the other users.
+* All schedules can be easily stored in the Django database with almost no changes.
+* Crontabs are a known thing which are sometimes hard to work with, but are a known quantity.
+
+
