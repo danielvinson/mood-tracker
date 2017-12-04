@@ -36,15 +36,24 @@ class MoodResponseAdmin(admin.ModelAdmin):
     list_display = ('id', 'get_related_user', 'get_related_sms', 'mood', 'get_tone')
 
     def get_related_user(self, instance):
-        return instance.user
+        if instance.user:
+            return instance.user
+        else:
+            return "No User"
     get_related_user.short_description = "User"
 
     def get_related_sms(self, instance):
-        return instance.related_sms
+        if instance.related_sms:
+            return instance.related_sms
+        else:
+            return "No Related SMS"
     get_related_sms.short_description = "SMS"
 
     def get_tone(self, instance):
-        return ["%s, %s" % (tone['tone_name'], tone['score']) for tone in json.loads(instance.tone)['document_tone']['tones']]
+        if instance.tone:
+            return ["%s, %s" % (tone['tone_name'], tone['score']) for tone in json.loads(instance.tone)['document_tone']['tones']]
+        else:
+            return "No Tone"
     get_tone.short_description = "Tone"
 
 
