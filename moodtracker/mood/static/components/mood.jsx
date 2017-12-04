@@ -1,6 +1,6 @@
 ;(function(global){
 
-const tones = [
+const TONES = [
     'anger', 
     'fear', 
     'joy', 
@@ -9,6 +9,7 @@ const tones = [
     'confident', 
     'tentative'
 ];
+
 
 class MoodChart extends React.Component {
     constructor(props){
@@ -31,7 +32,8 @@ class MoodChart extends React.Component {
             <NVD3Chart 
                 id="chart" 
                 type="lineChart" 
-                datum={this.props.chart_data} 
+                datum={this.props.chart_data}
+                margin={{left: 50, right: 50}}
                 x="x"
                 xAxis={xAxis}
                 y="y"
@@ -63,6 +65,7 @@ class ToneChart extends React.Component {
                 id="chart" 
                 type="lineChart" 
                 datum={this.props.chart_data} 
+                margin={{left: 50, right: 50}}
                 x="x"
                 xAxis={xAxis}
                 y="y"
@@ -72,6 +75,31 @@ class ToneChart extends React.Component {
     }
 }
 
+class TonePieChart extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+
+        };
+    }
+
+    render() {
+
+        return (
+            <NVD3Chart 
+                id="chart" 
+                type="pieChart" 
+                datum={this.props.chart_data} 
+                margin={{left: 50, right: 50}}
+                x="key"
+                y="y"
+            /> 
+        );
+    }
+}
+
+
+
 class MoodContainer extends React.Component {
     constructor(props){
         super(props);
@@ -80,6 +108,7 @@ class MoodContainer extends React.Component {
             raw_user_data: [],
             mood_chart_data: [],
             tone_chart_data: [],
+            tonePieData: [],
         };
     }
 
@@ -132,20 +161,19 @@ class MoodContainer extends React.Component {
 
         // Add Data for Tone Chart
         var toneDatum = [];
-        for (var tone in tones){
+        var tonePieDatum = [];
+        for (var tone in TONES){
             var toneSeries = {
-                key: tones[tone],
+                key: TONES[tone],
                 values: []
             };
-
-            console.log(toneSeries);
 
             for (var moodItem in this.state.user_data.mood){
                 var item = this.state.user_data.mood[moodItem];
                 var timestamp = Date.parse(item.timestamp);
                 for (var toneItem in item.tone.document_tone.tones){
                     var toneDocItem = item.tone.document_tone.tones[toneItem];
-                    if (toneDocItem.tone_id == tones[tone]){
+                    if (toneDocItem.tone_id == TONES[tone]){
                         toneSeries.values.push(
                             {
                                 x: timestamp,
@@ -157,10 +185,15 @@ class MoodContainer extends React.Component {
             }
 
             toneDatum.push(toneSeries);
+
+            tonePieDatum.push({
+                key: toneSeries.key,
+                y: toneSeries.values.length
+            });
         }
 
         console.log(toneDatum);
-        this.setState({ mood_chart_data: [moodSeries], tone_chart_data: toneDatum });
+        this.setState({ mood_chart_data: [moodSeries], tone_chart_data: toneDatum, tonePieData: tonePieDatum });
     }
 
     render() {
@@ -176,6 +209,7 @@ class MoodContainer extends React.Component {
                 <MoodChart chart_data={this.state.mood_chart_data} />
                 <h3>Tone vs. Time</h3>
                 <ToneChart chart_data={this.state.tone_chart_data} />
+                <TonePieChart chart_data={this.state.tonePieData} />
             </div>
             
         );
