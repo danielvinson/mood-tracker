@@ -1,6 +1,12 @@
 # mood-tracker
 Service which allows you to track how you are feeling via SMS.  Set a schedule for reminders, then respond to each text (or text whenever you want) with how you are feeling in real words and/or a number.  This service will record your responses and analyze them to provide a detailed history.
 
+Screenshots:
+
+![Moodtracker1](/screenshots/mt-1.png?raw=true)
+![Moodtracker2](/screenshots/mt-2.png?raw=true)
+![Moodtracker3](/screenshots/mt-3.png?raw=true)
+
 Backend: Django, SQLite3, RabbitMQ, Celery
 
 * CeleryBeat with RabbitMQ broker is used to create scheduled text messages.
