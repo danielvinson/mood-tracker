@@ -19,7 +19,7 @@ kombu==4.1.0
 meld3==1.0.2
 pathtools==0.1.2
 pycparser==2.18
-PyJWT==1.5.3
+PyJWT==2.4.0
 pyOpenSSL==17.3.0
 pytz==2017.2
 PyYAML==3.12
